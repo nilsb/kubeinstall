@@ -10,9 +10,7 @@ echo "**********************************************" >>../prereq.log
 echo "***   Install kubernetes bootstrap tools   ***" >>../prereq.log
 echo "**********************************************" >>../prereq.log
 echo "...Removing old versions"
-apt-get remove -y kubelet kubeadm kubectl etcd-server helm >>../prereq.log 2>&1
-apt-get purge -y kubelet kubeadm kubectl etcd-server helm >>../prereq.log 2>&1
-apt-get autoremove -y >>../prereq.log 2>&1
+apt-get autoremove -y --purge --allow-change-held-packages kubelet kubeadm kubectl etcd-server helm >>../prereq.log 2>&1
 rm -rf /var/lib/etcd >>../prereq.log 2>&1
 rm -rf /etc/kubernetes >>../prereq.log 2>&1
 rm -rf /etc/default/etcd >>../prereq.log 2>&1

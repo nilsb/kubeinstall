@@ -15,9 +15,23 @@ echo "**********************************************" >>../prereq.log
 echo "***            Install Docker-ce           ***" >>../prereq.log
 echo "**********************************************" >>../prereq.log
 echo "..Installing docker-ce"
-apt-get update >>../prereq.log 2>&1
+echo "...Removing older versions"
+systemctl stop docker >>../prereq.log 2>&1
+systemctl disable docker >>../prereq.log 2>&1
+systemctl daemon-reload >>../prereq.log 2>&1
+rm -rf /lib/systemd/system/docker.service
+apt-get autoremove -y --purge docker-engine docker docker.io docker-ce runc >>../prereq.log 2>&1
+rm -rf /var/lib/containerd >>../prereq.log 2>&1
+rm -rf /var/lib/docker >>../prereq.log 2>&1
+rm -rf /var/lib/dockershim >>../prereq.log 2>&1
+rm -rf /etc/docker >>../prereq.log 2>&1
+rm -rf /etc/apparmor-d/docker >>../prereq.log 2>&1
+rm -rf /var/run/docker.sock >>../prereq.log 2>&1
+groupdel docker >>../prereq.log 2>&1
+sleep 1m
 
 echo "...Installing docker dependencies"
+apt-get update >>../prereq.log 2>&1
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common golang rpcbind glusterfs-client >>../prereq.log 2>&1
 
 echo "...Adding docker gpg key and repository"
@@ -25,20 +39,6 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs)  stable" >>../prereq.log 2>&1
 apt-cache policy docker-ce >>../prereq.log 2>&1
 apt-get update >>../prereq.log 2>&1
-
-echo "...Removing older versions"
-systemctl stop docker >>../prereq.log 2>&1
-systemctl disable docker >>../prereq.log 2>&1
-systemctl daemon-reload >>../prereq.log 2>&1
-rm -rf /lib/systemd/system/docker.service
-apt-get purge -y docker docker-engine docker.io docker-ce >>../prereq.log 2>&1
-apt-get autoremove -y --purge docker docker-engine docker.io docker-ce >>../prereq.log 2>&1
-rm -rf /var/lib/containerd >>../prereq.log 2>&1
-rm -rf /var/lib/docker >>../prereq.log 2>&1
-rm -rf /etc/docker >>../prereq.log 2>&1
-rm -rf /etc/apparmor-d/docker >>../prereq.log 2>&1
-rm -rf /var/run/docker.sock >>../prereq.log 2>&1
-groupdel docker >>../prereq.log 2>&1
 
 echo "...Installing"
 apt-get install -y docker-ce >>../prereq.log 2>&1
@@ -60,20 +60,19 @@ systemctl stop docker >>../prereq.log 2>&1
 sed -i 's+ExecStart=/usr/bin/dockerd+ExecStart=/usr/bin/dockerd --exec-opt native.cgroupdriver=systemd +g' /lib/systemd/system/docker.service
 systemctl daemon-reload >>../prereq.log 2>&1
 systemctl enable docker >>../prereq.log 2>&1
-systemctl start docker >>../prereq.log 2>&1
 fi
 
 echo "...Set cgroupdriver enabled for containerd"
 systemctl stop containerd >>../prereq.log 2>&1
 if ! $(grep -q "systemd_cgroup = true" "/etc/containerd/config.toml"); then
-containerd config default | tee /etc/containerd/config.toml
+containerd config default | tee /etc/containerd/config.toml >>../prereq.log 2>&1
 sed -i 's+systemd_cgroup = false+systemd_cgroup = true+g' /etc/containerd/config.toml
 systemctl enable containerd >>../prereq.log 2>&1
 systemctl start containerd >>../prereq.log 2>&1
 fi
 
 echo "...Restart docker"
-  systemctl start docker >>../prereq.log 2>&1
+systemctl start docker >>../prereq.log 2>&1
 if curl -s --unix-socket /var/run/docker.sock http/_ping 2>&1 >/dev/null
 then
   echo "....Running"
