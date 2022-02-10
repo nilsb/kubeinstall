@@ -19,10 +19,10 @@ echo -n "Please enter ip address of controlplane: "
 read INTERNAL_IP
 #echo -n "Please enter hostname of controlplane: "
 #read NAME
-echo -n "Please enter the name of your organization: "
-read ORGNAME
-echo -n "Please enter the two charcter country code for certificates: "
-read COUNTRY
+#echo -n "Please enter the name of your organization: "
+#read ORGNAME
+#echo -n "Please enter the two charcter country code for certificates: "
+#read COUNTRY
 echo -n "What are you installing? (controlplane/node):"
 read TYPE
 
@@ -47,11 +47,11 @@ source "./checks.log"
 cd ..
 
 if [[ ${TYPE}="controlplane" && ${PREREQ}=1 ]]; then
-echo ".Installing etcd server"
-cd etcd
-./cert.sh ${INTERNAL_IP} ${NAME} ${ORGNAME} ${COUNTRY}
-./install.sh ${INTERNAL_IP}
-cd ..
+#echo ".Installing etcd server"
+#cd etcd
+#./cert.sh ${INTERNAL_IP} ${NAME} ${ORGNAME} ${COUNTRY}
+#./install.sh ${INTERNAL_IP}
+#cd ..
 
 echo ".Installing controlplane"
 ./controlplane.sh ${INTERNAL_IP} ${NAME} ${CLUSTERNAME}

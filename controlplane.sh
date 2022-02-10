@@ -36,13 +36,6 @@ networking:
   serviceSubnet: "10.96.0.0/16"
   dnsDomain: "cluster.local"
 clusterName: ${CLUSTERNAME}
-etcd:
-  external:
-    endpoints:
-      - https://${INTERNAL_IP}:2379
-    caFile: /etc/kubernetes/pki/etcd/ca.crt
-    certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
-    keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
@@ -61,7 +54,7 @@ cgroupDriver: systemd
 EOF
 
 echo "...Init kubernetes controlplane"
-kubeadm init --config ~/kubeadm-config.yaml --upload-certs
+kubeadm init --config ~/kubeadm-config.yaml
 
 echo "...Set config file for kubectl"
 mkdir -p $HOME/.kube >>./controlplane.log 2>&1

@@ -27,16 +27,24 @@ apt-cache policy docker-ce >>../prereq.log 2>&1
 apt-get update >>../prereq.log 2>&1
 
 echo "...Removing older versions"
+systemctl stop docker >>../prereq.log 2>&1
+systemctl disable docker >>../prereq.log 2>&1
+systemctl daemon-reload >>../prereq.log 2>&1
+rm -rf /lib/systemd/system/docker.service
 apt-get purge -y docker docker-engine docker.io docker-ce >>../prereq.log 2>&1
-apt-get autoremove -y >>../prereq.log 2>&1
-rm -rf /var/lib/containerd
-rm -rf /var/lib/docker
+apt-get autoremove -y --purge docker docker-engine docker.io docker-ce >>../prereq.log 2>&1
+rm -rf /var/lib/containerd >>../prereq.log 2>&1
+rm -rf /var/lib/docker >>../prereq.log 2>&1
+rm -rf /etc/docker >>../prereq.log 2>&1
+rm -rf /etc/apparmor-d/docker >>../prereq.log 2>&1
+rm -rf /var/run/docker.sock >>../prereq.log 2>&1
+groupdel docker >>../prereq.log 2>&1
 
 echo "...Installing"
 apt-get install -y docker-ce >>../prereq.log 2>&1
 
 echo "...Add docker group"
-groupadd docker
+groupadd docker >>../prereq.log 2>&1
 
 echo "...Add logged on user to docker group"
 usermod -aG docker $1
