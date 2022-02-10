@@ -39,6 +39,7 @@ PREREQ=""
 cd prereq
 ./enable_bridged_traffic.sh
 ./disable_swap.sh
+apt-get upgrade -y >>./prereq.log 2>&1
 ./install_docker.sh ${NONROOT}
 ./install_kubetools.sh
 ./verify.sh
