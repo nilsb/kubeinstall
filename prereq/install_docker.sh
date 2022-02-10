@@ -15,20 +15,13 @@ echo "**********************************************" >>../prereq.log
 echo "***            Install Docker-ce           ***" >>../prereq.log
 echo "**********************************************" >>../prereq.log
 echo "..Installing docker-ce"
-echo "...Removing older versions"
-systemctl stop docker >>../prereq.log 2>&1
-systemctl disable docker >>../prereq.log 2>&1
-systemctl daemon-reload >>../prereq.log 2>&1
 rm -rf /lib/systemd/system/docker.service
-apt-get autoremove -y --purge docker-engine docker docker.io docker-ce runc >>../prereq.log 2>&1
 rm -rf /var/lib/containerd >>../prereq.log 2>&1
 rm -rf /var/lib/docker >>../prereq.log 2>&1
 rm -rf /var/lib/dockershim >>../prereq.log 2>&1
 rm -rf /etc/docker >>../prereq.log 2>&1
 rm -rf /etc/apparmor-d/docker >>../prereq.log 2>&1
 rm -rf /var/run/docker.sock >>../prereq.log 2>&1
-groupdel docker >>../prereq.log 2>&1
-sleep 1m
 
 echo "...Installing docker dependencies"
 apt-get update >>../prereq.log 2>&1
