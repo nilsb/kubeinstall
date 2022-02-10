@@ -27,7 +27,6 @@ apt-cache policy docker-ce >>../prereq.log 2>&1
 apt-get update >>../prereq.log 2>&1
 
 echo "...Removing older versions"
-apt-get remove docker docker-engine docker.io docker-ce -y >>../prereq.log 2>&1
 apt-get purge -y docker docker-engine docker.io docker-ce >>../prereq.log 2>&1
 apt-get autoremove -y >>../prereq.log 2>&1
 rm -rf /var/lib/containerd
