@@ -22,7 +22,7 @@ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https:/
 curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
 echo "deb https://baltocdn.com/helm/stable/debian/ all main" > /etc/apt/sources.list.d/helm-stable-debian.list
 apt-get update >>../prereq.log 2>&1
-apt-get install -y kubelet kubeadm kubectl etcd-server helm >>../prereq.log 2>&1
+apt-get install -y kubelet kubeadm kubectl helm >>../prereq.log 2>&1
 apt-mark hold kubelet kubeadm kubectl >>../prereq.log 2>&1
 systemctl enable kubelet >>../prereq.log 2>&1
 echo "...Adding basic helm repos"
