@@ -23,6 +23,15 @@ echo -n "Please enter the name of your organization: "
 read ORGNAME
 echo -n "Please enter the two charcter country code for certificates: "
 read COUNTRY
+echo -n "What are you installing? (controlplane/node):"
+read TYPE
+
+if ! [[ ${TYPE}="controlplane" || ${TYPE}="node" ]]
+then
+  echo "Type of install must be controlplane or node"
+  exit 0
+fi
+
 echo ""
 NAME=${HOSTNAME}
 echo ".Installing prerequisites"
@@ -36,7 +45,7 @@ cd prereq
 source "./checks.log"
 cd ..
 
-if [ ${PREREQ}=1 ]; then
+if [[ ${TYPE}="controlplane" && ${PREREQ}=1 ]]; then
 echo ".Installing etcd server"
 cd etcd
 ./cert.sh ${INTERNAL_IP} ${NAME} ${ORGNAME} ${COUNTRY}
